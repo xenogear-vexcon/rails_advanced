@@ -1,0 +1,3 @@
+p= answer.body
+- if current_user == answer.user
+	p= link_to 'Delete answer', answer_path(answer), method: :delete, class: 'btn btn-danger'
