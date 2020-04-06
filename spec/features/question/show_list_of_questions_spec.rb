@@ -9,18 +9,17 @@ feature 'User can see all question', %q{ All users can see list of questions } d
 
   scenario 'Authenticated user can see list of questions' do
     sign_in(user)
-    
-    expect(page).to have_content("#{questions[0].title}")
-    expect(page).to have_content("#{questions[0].body}")
-    expect(page).to have_content("#{questions[1].title}")
-    expect(page).to have_content("#{questions[1].body}")
+
+    questions.each do |question|
+      expect(page).to have_content("#{question.title}")
+      expect(page).to have_content("#{question.body}")
+    end
   end
 
-
   scenario 'Unauthenticated user can see list of questions' do
-    expect(page).to have_content("#{questions[0].title}")
-    expect(page).to have_content("#{questions[0].body}")
-    expect(page).to have_content("#{questions[1].title}")
-    expect(page).to have_content("#{questions[1].body}")
+    questions.each do |question|
+      expect(page).to have_content("#{question.title}")
+      expect(page).to have_content("#{question.body}")
+    end
   end
 end

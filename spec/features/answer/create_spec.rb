@@ -7,7 +7,7 @@ feature 'User can create answer', %q{
 } do
 
   given(:user) {create(:user)}
-  given!(:question) {create(:question)}
+  given!(:question) {create(:question, user: user)}
 
   describe 'Authenticated user' do
     background do
@@ -22,8 +22,8 @@ feature 'User can create answer', %q{
       click_on 'Answer'
 
       expect(page).to have_content 'Your answer successfully created.'
-      expect(page).to have_content 'MyString'
-      expect(page).to have_content 'MyText'
+      expect(page).to have_content question.title
+      expect(page).to have_content question.body
       expect(page).to have_content 'answer for a question'
     end
 

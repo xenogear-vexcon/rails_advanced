@@ -1,8 +1,7 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
-  before_action :load_question, only: %i[show]
+  before_action :load_question, only: %i[show destroy]
   before_action :load_answers, only: %i[show]
-  before_action :user_is_author, only: %i[destroy]
 
   def index
     @questions = Question.all
@@ -25,7 +24,7 @@ class QuestionsController < ApplicationController
     if @question.save
       redirect_to @question, notice: 'Your question successfully created.'
     else
-      render :new
+      render :new, notice: "Title can't be blank"
     end
   end
 
@@ -38,8 +37,12 @@ class QuestionsController < ApplicationController
   # end
 
   def destroy
-    @question.destroy
-    redirect_to questions_path, notice: 'Your question successfully deleted.'
+    if current_user.author_of?(@question)
+      @question.destroy
+      redirect_to questions_path, notice: 'Your question successfully deleted.'
+    else
+      redirect_to @question, notice: "Not your question!"
+    end
   end
 
   private
@@ -54,10 +57,5 @@ class QuestionsController < ApplicationController
 
   def question_params
     params.require(:question).permit(:title, :body)
-  end
-
-  def user_is_author
-    load_question
-    redirect_to(question_path(@question)) unless @question.user == current_user
   end
 end

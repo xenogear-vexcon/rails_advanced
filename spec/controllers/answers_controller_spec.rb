@@ -26,7 +26,7 @@ RSpec.describe AnswersController, type: :controller do
 
         it 're-renders question view' do
           post :create, params: { answer: attributes_for(:answer, :invalid), question_id: question }
-          expect(response).to redirect_to assigns(:question)
+          expect(response).to render_template('questions/show')
         end
       end
     end
@@ -78,7 +78,7 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'redirect to question' do
         delete :destroy, params: { id: answer }
-        expect(response).to redirect_to question_path(answer.question)
+        expect(response).to render_template ('questions/show')
       end
     end
   end

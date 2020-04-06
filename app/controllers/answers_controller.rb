@@ -1,6 +1,5 @@
-class AnswersController < ApplicationController
+  class AnswersController < ApplicationController
   before_action :authenticate_user!
-  before_action :user_is_author, only: %i[destroy]
 
   # def edit; end
 
@@ -11,8 +10,8 @@ class AnswersController < ApplicationController
     if @answer.save
       redirect_to @question, notice: 'Your answer successfully created.'
     else
-      redirect_to @question, notice: "Answer can't be blank"
-    end 
+      render 'questions/show', notice: "Answer can't be blank"
+    end
   end
 
   # def update
@@ -24,8 +23,13 @@ class AnswersController < ApplicationController
   # end
 
   def destroy
-    @answer.destroy
-    redirect_to question_path(@answer.question), notice: 'Your answer successfully deleted.'
+    @answer = Answer.find(params[:id])
+    if current_user.author_of?(@answer)
+      @answer.destroy
+      redirect_to @answer.question, notice: 'Your answer successfully deleted.'
+    else
+      render 'questions/show', notice: "Not your answer!"
+    end
   end
 
   private
@@ -36,10 +40,5 @@ class AnswersController < ApplicationController
 
   def question
     @question ||= Question.find(params[:question_id])
-  end
-
-  def user_is_author
-    @answer = Answer.find(params[:id])
-    redirect_to(question_path(@answer.question)) unless @answer.user == current_user
   end
 end

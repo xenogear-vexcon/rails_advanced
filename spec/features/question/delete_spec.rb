@@ -16,6 +16,8 @@ feature 'User can delete his own question', %q{
       click_link 'Delete question'
 
       expect(page).to have_content 'Your question successfully deleted.'
+      expect(page).to_not have_content "#{question.title}"
+      expect(page).to_not have_content "#{question.body}"
     end
 
     scenario "delete other user's question" do
