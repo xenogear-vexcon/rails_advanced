@@ -1,0 +1,9 @@
+h1= @question.title
+p= @question.body
+
+- if current_user&.author_of?(@question)
+	p= link_to 'Delete question', question_path(@question), method: :delete, class: 'btn btn-danger'
+
+div= render partial: '/answers/answer', collection: @question.answers
+
+div= render 'answers/new'
