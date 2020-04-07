@@ -1,0 +1,9 @@
+h5= 'Answer the question'
+
+= form_with(model: [@question, @answer], local: true) do |f|
+	= render 'shared/errors', resource: @answer
+	p
+	  = f.label :body
+	  = f.text_area :body
+	.actions
+		= f.submit 'Answer'

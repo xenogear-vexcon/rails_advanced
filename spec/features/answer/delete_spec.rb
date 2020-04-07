@@ -18,6 +18,7 @@ feature 'User can delete only his own answer', %q{
       expect(page).to have_content 'Your answer successfully deleted.'
       expect(page).to have_content question.title
       expect(page).to have_content question.body
+      expect(page).to_not have_content answer.body
     end
 
     scenario "delete other user's answer" do

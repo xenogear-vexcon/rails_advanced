@@ -1,6 +1,10 @@
   class AnswersController < ApplicationController
   before_action :authenticate_user!
 
+  # def new
+  #   @answer = question.answers.new
+  # end
+
   # def edit; end
 
   def create
@@ -8,9 +12,9 @@
     @answer.user = current_user
 
     if @answer.save
-      redirect_to @question, notice: 'Your answer successfully created.'
+      redirect_to @question, notice: "Your answer successfully created"
     else
-      render 'questions/show', notice: "Answer can't be blank"
+      render 'questions/show'
     end
   end
 
@@ -26,7 +30,7 @@
     @answer = Answer.find(params[:id])
     if current_user.author_of?(@answer)
       @answer.destroy
-      redirect_to @answer.question, notice: 'Your answer successfully deleted.'
+      redirect_to @answer.question, notice: "Your answer successfully deleted"
     else
       render 'questions/show', notice: "Not your answer!"
     end
