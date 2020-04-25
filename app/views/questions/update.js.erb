@@ -1,0 +1,7 @@
+$('.question-errors').html('<%= render 'shared/errors', resource: @question %>');
+
+<% if !@question.errors.present? %>
+  document.getElementById("<%= dom_id(@question, 'form') %>").remove();
+  document.getElementById("<%= dom_id(@question) %>").innerHTML = "<%= j render @question %>"
+  document.getElementById("<%= dom_id(@question) %>").style.display = "block"
+<% end %>

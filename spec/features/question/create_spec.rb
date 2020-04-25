@@ -8,7 +8,7 @@ feature 'User can create question', %q{
 
   given(:user) {create(:user)}
 
-  describe 'Authenticated user' do
+  describe 'Authenticated user', js: true do
     background do
       sign_in(user)
 
@@ -19,7 +19,7 @@ feature 'User can create question', %q{
     scenario 'asks a question' do
       fill_in 'Title', with: 'Test question'
       fill_in 'Body', with: 'text text text'
-      click_on 'Ask'
+      click_on 'Confirm'
 
       expect(page).to have_content 'Your question successfully created.'
       expect(page).to have_content 'Test question'
@@ -27,13 +27,15 @@ feature 'User can create question', %q{
     end
 
     scenario 'asks a question with errors' do
-      click_on 'Ask'
+      fill_in 'Title', with: ''
+      fill_in 'Body', with: 'text text text'
+      click_on 'Confirm'
 
       expect(page).to have_content "Title can't be blank"
     end
   end
 
-  scenario 'Unauthenticated user tries to ask a question' do
+  scenario 'Unauthenticated user tries to ask a question', js: true do
     visit questions_path
     click_on 'Ask question'
 

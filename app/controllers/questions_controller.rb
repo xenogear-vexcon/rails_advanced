@@ -6,15 +6,21 @@ class QuestionsController < ApplicationController
   end
 
   def show
+    @question = Question.find(params[:id])
     @answer = question.answers.new
+    @best_answer = question.answers.where(best_answer: true)
+    @other_answers = question.answers.where.not(best_answer: true)
   end
 
   def new
     @question = current_user.questions.new
   end
 
-  # def edit
-  # end
+  def edit
+    if current_user.author_of?(question)
+      @question = Question.find(params[:id])
+    end
+  end
 
   def create
     @question = current_user.questions.new(question_params)
@@ -26,21 +32,12 @@ class QuestionsController < ApplicationController
     end
   end
 
-  # def update
-  #   if @question.update(question_params)
-  #     redirect_to @question
-  #   else
-  #     render :edit
-  #   end
-  # end
+  def update
+    question.update(question_params) if current_user.author_of?(question)
+  end
 
   def destroy
-    if current_user.author_of?(question)
-      @question.destroy
-      redirect_to questions_path, notice: 'Your question successfully deleted.'
-    else
-      redirect_to @question, notice: "Not your question!"
-    end
+    @question.destroy if current_user.author_of?(question)
   end
 
   private
@@ -52,4 +49,5 @@ class QuestionsController < ApplicationController
   def question_params
     params.require(:question).permit(:title, :body)
   end
+
 end

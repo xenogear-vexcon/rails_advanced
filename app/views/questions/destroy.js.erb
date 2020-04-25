@@ -1,0 +1,6 @@
+$('.question-errors').html('<%= render 'shared/errors', resource: @question %>');
+
+<% if !@question.errors.present? %>
+	document.getElementById('<%= dom_id(@question) %>').remove();
+	window.location.href = "<%= questions_path %>";
+<% end %>
