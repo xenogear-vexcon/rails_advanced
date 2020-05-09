@@ -1,4 +1,4 @@
-  class AnswersController < ApplicationController
+class AnswersController < ApplicationController
   before_action :authenticate_user!
   before_action :set_answer, only: %i[edit update destroy mark_as_best]
   before_action :set_question, only: %i[create]
@@ -22,12 +22,7 @@
 
   def mark_as_best
     @question = @answer.question
-    if current_user.author_of?(@question)
-      @question.answers.update(best_answer: false)
-      @answer.update(best_answer: true)
-    else
-      render status: :forbidden
-    end
+    @answer.mark_as_best if current_user.author_of?(@question)
   end
 
   private

@@ -9,4 +9,4 @@
 						h4.card-text.mb-4.mt-4 #{question.body}
 						- if current_user&.author_of?(question)
 							= link_to 'Edit question', edit_question_path(question), class: 'btn btn-outline-warning', remote: true
-							= link_to 'Delete question', question, method: :delete, class: 'btn btn-outline-danger', remote: true
+							= link_to 'Delete question', question, method: :delete, class: 'btn btn-outline-danger'

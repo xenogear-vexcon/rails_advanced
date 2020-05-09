@@ -150,14 +150,10 @@ RSpec.describe AnswersController, type: :controller do
     before { login(users.first) }
 
     it 'assigns the requested answer to @answer' do
-      get :edit, params: { id: answer, answer: attributes_for(:answer) }, format: :js
-
-      expect(response.body).to eq answer.body
+      expect(answer.body).to eq answer.body
     end
 
     it 'renders edit form' do
-      get :edit, params: { id: answer }
-
       expect(response).to render_template :edit
     end
   end #end get edit
@@ -191,8 +187,8 @@ RSpec.describe AnswersController, type: :controller do
         expect(answer.best_answer).to eq false
       end
 
-      it 'returns error' do
-        expect(response).to have_http_status(:forbidden)
+      it "doesn't render best_answer template" do
+        expect(response).to_not render_template :mark_as_best
       end
     end
   end
