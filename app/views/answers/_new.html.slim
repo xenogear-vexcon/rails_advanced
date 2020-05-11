@@ -1,6 +1,11 @@
 -if user_signed_in?
 	.answer-errors
 	= form_with(model: [@question, @answer], class: 'new-answer') do |f|
-		= f.label :body, class: "hidden"
-		= f.text_area :body, class: 'form-control col-sm-6'
-		= f.submit 'Answer'
+		p
+			= f.label :body, class: "hidden"
+			= f.text_area :body, class: 'form-control col-sm-6'
+		p
+			= f.label :files
+			= f.file_field :files, multiple: true
+		p
+			= f.submit 'Answer'
