@@ -1,0 +1,6 @@
+$('.question-errors').html('<%= render 'shared/errors', resource: @question %>');
+
+<% if !@question.errors.present? %>
+  document.getElementById('<%= dom_id(@question) %>').insertAdjacentHTML('afterend', "<%= j render 'form', question: @question %>");
+  document.getElementById('<%= dom_id(@question) %>').style.display = "none";
+<% end %>

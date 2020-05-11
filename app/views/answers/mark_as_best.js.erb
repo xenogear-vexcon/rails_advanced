@@ -1,0 +1,13 @@
+$('.answer-errors').html('<%= render 'shared/errors', resource: @answer %>');
+
+<% if !@answer.errors.present? %>
+	var currentBestAnswer = document.getElementById('<%= dom_id(@answer) %>');
+	$(currentBestAnswer).addClass('best-of-the-best'); //only for feature testing
+	currentBestAnswer.remove();
+
+	var previousBestAnswer = $('.best-answer .answer');
+	previousBestAnswer.remove();
+
+	$('.best-answer').prepend(currentBestAnswer);
+	$('.answers').append(previousBestAnswer);
+<% end %>

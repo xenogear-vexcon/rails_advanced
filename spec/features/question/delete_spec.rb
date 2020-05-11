@@ -8,14 +8,13 @@ feature 'User can delete his own question', %q{
   given(:users) {create_list(:user, 2)}
   given!(:question) {create(:question, user: users.first)}
 
-  describe 'Authenticated user' do
+  describe 'Authenticated user', js: true do
 
     scenario 'delete own question' do
       sign_in(users.first)
       visit question_path(question)
       click_link 'Delete question'
 
-      expect(page).to have_content 'Your question successfully deleted.'
       expect(page).to_not have_content "#{question.title}"
       expect(page).to_not have_content "#{question.body}"
     end

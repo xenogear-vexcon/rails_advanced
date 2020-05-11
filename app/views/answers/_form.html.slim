@@ -1,0 +1,6 @@
+= form_with model: @answer, id: dom_id(@answer, 'form'), remote: true do |f|
+	.answer-errors
+	p
+		= f.label :body
+		= f.text_area :body, class: 'form-control col-sm-6'
+		= f.submit 'Confirm'

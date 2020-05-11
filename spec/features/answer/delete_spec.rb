@@ -10,15 +10,12 @@ feature 'User can delete only his own answer', %q{
   given!(:answer) {create(:answer, question: question, user: users.first)}
 
   describe 'Authenticated user' do
-    scenario 'delete his own answer' do
+    scenario 'delete his own answer', js: true do
       sign_in(users.first)
       visit question_path(question)
       click_link 'Delete answer'
 
-      expect(page).to have_content 'Your answer successfully deleted.'
-      expect(page).to have_content question.title
-      expect(page).to have_content question.body
-      expect(page).to_not have_content answer.body
+      expect(page).to_not have_content "#{answer.body}"
     end
 
     scenario "delete other user's answer" do

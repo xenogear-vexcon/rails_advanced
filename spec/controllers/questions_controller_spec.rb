@@ -21,11 +21,21 @@ RSpec.describe QuestionsController, type: :controller do
 
   describe 'GET #show' do
     before { get :show, params: { id: question } }
+    let(:answer1) { create(:answer, question: question) }
+    let(:answer2) { create(:answer, question: question) }
 
     it 'assigns the requested question to @question' do
       expect(assigns(:question)).to eq question
     end
 
+    it 'populates an array of all question answers' do
+      expect(assigns(:answer1)).to eq question.answers[0]
+      expect(assigns(:answer2)).to eq question.answers[1]
+    end
+
+    it 'assigns new answer for question' do
+      expect(assigns(:answer)).to be_a_new(Answer)
+    end
 
     it 'renders show view' do
       expect(response).to render_template :show
@@ -103,11 +113,11 @@ RSpec.describe QuestionsController, type: :controller do
       before { login(users.first) }
       
       it 'deletes the question' do
-        expect { delete :destroy, params: { id: question } }.to change(users.first.questions, :count).by(-1)
+        expect { delete :destroy, params: { id: question }, format: :js }.to change(users.first.questions, :count).by(-1)
       end
 
       it 'redirects to index' do
-        delete :destroy, params: { id: question }
+        delete :destroy, params: { id: question }, format: :js
         expect(response).to redirect_to questions_path
       end
     end
@@ -116,67 +126,93 @@ RSpec.describe QuestionsController, type: :controller do
       before { login(users.second) }
 
       it "can't delete question from db" do
-        expect { delete :destroy, params: { id: question } }.to_not change(users.first.questions, :count)
+        expect { delete :destroy, params: { id: question }, format: :js }.to_not change(users.first.questions, :count)
       end
 
       it 'redirect to question' do
-        delete :destroy, params: { id: question }
+        delete :destroy, params: { id: question }, format: :js
         expect(response).to redirect_to assigns(:question)
       end
     end
   end
 
-  # describe 'GET #edit' do
-  #   before { login(user) }
+  describe 'GET #edit' do
+    before { login(users.first) }
+    before { get :show, params: { id: question } }
 
-  #   before { get :edit, params: { id: question } }
-
-  #   it 'assigns the requested question to @question' do
-  #     expect(assigns(:question)).to eq question
-  #   end
+    it 'assigns the requested question to @question' do
+      expect(assigns(:question)).to eq question
+    end
 
 
-  #   it 'renders edit view' do
-  #     expect(response).to render_template :edit
-  #   end
-  # end
+    it 'renders edit form in show template' do
+      expect(response).to render_template :show
+    end
+  end
 
-  # describe 'PATCH #update' do
-  #   before { login(user) }
+  describe 'PATCH #update' do
+    let!(:question) { create(:question, user: users.first) }
 
-  #   context 'with valid attributes' do
-  #     it 'assigns the requested question to @question' do
-  #       patch :update, params: { id: question, question: attributes_for(:question) }
-  #       expect(assigns(:question)).to eq question
-  #     end
+    context 'not authorized user' do
+      it "can't edit question" do
+        patch :update, params: { id: question, question: attributes_for(:question) }
 
-  #     it 'changes question attributes' do
-  #       patch :update, params: { id: question, question: { title: 'new title', body: 'new body' } }
-  #       question.reload
+        expect(question.body).to eq question.body
+      end
 
-  #       expect(question.title).to eq 'new title'
-  #       expect(question.body).to eq 'new body'
-  #     end
+      it 'redirect to question' do
+        patch :update, params: { id: question, question: attributes_for(:question) }
+        expect(response).to redirect_to new_user_session_path
+      end
+    end
 
-  #     it 'redirects to updated question' do
-  #       patch :update, params: { id: question, question: attributes_for(:question) }
-  #       expect(response).to redirect_to question
-  #     end
-  #   end
+    context 'authenticated user change own question' do
+      before { login(users.first) }
 
-  #   context 'with invalid attributes' do
-  #     before { patch :update, params: { id: question, question: attributes_for(:question, :invalid) } }
+      context 'with valid attributes' do
+        it 'changes question attributes' do
+          patch :update, params: { id: question, question: { title: 'new title', body: 'new body' } }, format: :js
+          question.reload
 
-  #     it 'does not change question' do
-  #       question.reload
+          expect(question.title).to eq 'new title'
+          expect(question.body).to eq 'new body'
+        end
 
-  #       expect(question.title).to eq 'MyString'
-  #       expect(question.body).to eq 'MyText'
-  #     end
+        it 'renders update view' do
+          patch :update, params: { id: question, question: { title: 'new title', body: 'new body' } }, format: :js
+          expect(response).to render_template :update
+        end
+      end
 
-  #     it 're-renders edit view' do
-  #       expect(response).to render_template :edit
-  #     end
-  #   end
-  # end
+      context 'with invalid attributes' do
+        it 'does not change question' do
+          patch :update, params: { id: question, question: attributes_for(:question, :invalid) }, format: :js
+
+          expect(question.title).to eq question.title
+          expect(question.body).to eq question.body
+        end
+
+        it 're-renders edit view' do
+          patch :update, params: { id: question, question: attributes_for(:question, :invalid) }, format: :js
+          expect(response).to render_template :update
+        end
+      end
+    end #own question
+
+    context 'authenticated user tries to change alien question' do
+      before { login(users.second) }
+
+      it 'does not change answer' do
+        patch :update, params: { id: question, question: attributes_for(:question, :invalid) }, format: :js
+
+        expect(question.title).to eq question.title
+        expect(question.body).to eq question.body
+      end
+
+      it 're-renders edit view' do
+        patch :update, params: { id: question, question: attributes_for(:question, :invalid) }, format: :js
+        expect(response).to render_template :update
+      end
+    end #alien question
+  end #patch update
 end
