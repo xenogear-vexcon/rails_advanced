@@ -14,6 +14,6 @@ class Answer < ApplicationRecord
   end
 
   def not_best?
-    self.best_answer == false
+    !best_answer?
   end
 end
