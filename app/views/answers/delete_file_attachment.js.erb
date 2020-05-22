@@ -1,6 +1,0 @@
-$('.answer-errors').html('<%= render 'shared/errors', resource: @answer %>');
-
-<% if !@answer.errors.present? %>
-	document.getElementById("<%= dom_id(@answer) %>").innerHTML = "<%= j render @answer %>";
-  document.getElementById("<%= dom_id(@answer) %>").style.display = "block";
-<% end %>

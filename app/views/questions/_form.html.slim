@@ -1,13 +1,24 @@
+.question-errors
 = form_with model: @question, id: dom_id(@question, 'form') do |f|
-	.question-errors
 	p
 	  = f.label :title
 	  = f.text_field :title
 	p
 	  = f.label :body
 	  = f.text_area :body
-	p
+	p.b
 		= f.label :files
 		= f.file_field :files, multiple: true, direct_upload: true
+
+	p.b Reward
+  	= f.fields_for :reward do |reward|
+			= render 'reward', f: reward
+
+	p.b Links:
+    = f.fields_for :links do |link|
+  		= render 'shared/link_fields', f: link
+  	.links
+      = link_to_add_association 'add link', f, :links, partial: 'shared/link_fields'
+
 	p
 	  = f.submit 'Confirm'

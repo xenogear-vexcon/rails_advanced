@@ -9,5 +9,9 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :users do
+    resources :rewards, only: [:index]
+  end
+
   root to: 'questions#index'
 end

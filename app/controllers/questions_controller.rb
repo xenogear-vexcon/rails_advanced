@@ -10,10 +10,13 @@ class QuestionsController < ApplicationController
     @answer = question.answers.new
     @best_answer = question.answers.where(best_answer: true)
     @other_answers = question.answers.where.not(best_answer: true)
+    @answer.links.new
   end
 
   def new
     @question = current_user.questions.new
+    @question.links.new
+    @question.build_reward
   end
 
   def edit
@@ -45,12 +48,6 @@ class QuestionsController < ApplicationController
     end
   end
 
-  def delete_file_attachment
-    @file = ActiveStorage::Attachment.find(params[:id])
-    @file.purge
-    @question = Question.find(@file.record_id)
-  end
-
   private
 
   def question
@@ -58,7 +55,7 @@ class QuestionsController < ApplicationController
   end
 
   def question_params
-    params.require(:question).permit(:title, :body, files: [])
+    params.require(:question).permit(:title, :body, files: [], links_attributes: [:id, :name, :url, :_destroy], reward_attributes: [:id, :title, :image])
   end
 
 end

@@ -13,3 +13,11 @@
  *= require_tree .
  *= require_self
  */
+
+.b {
+	font-weight: bold;
+}
+.nested-fields {
+	margin-bottom: 1rem;
+}
+
