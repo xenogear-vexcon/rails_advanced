@@ -29,7 +29,7 @@ gem 'jbuilder', '~> 2.7'
 gem 'bootsnap', '>= 1.4.2', require: false
 
 gem 'slim-rails', '~> 3.1', '>= 3.1.1'
-gem 'rubocop', '~> 0.39.0'
+gem 'rubocop', '~> 0.48.1'
 
 gem 'devise', '~> 4.7', '>= 4.7.1'
 
