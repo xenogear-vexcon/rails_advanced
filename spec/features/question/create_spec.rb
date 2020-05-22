@@ -16,7 +16,7 @@ feature 'User can create question', %q{
       click_on 'Ask question'
     end
 
-    scenario 'asks a question' do
+    scenario 'create a question' do
       fill_in 'Title', with: 'Test question'
       fill_in 'Body', with: 'text text text'
       click_on 'Confirm'
@@ -26,16 +26,27 @@ feature 'User can create question', %q{
       expect(page).to have_content 'text text text'
     end
 
-    scenario 'asks a question with errors' do
+    scenario 'create a question with errors' do
       fill_in 'Title', with: ''
       fill_in 'Body', with: 'text text text'
       click_on 'Confirm'
 
       expect(page).to have_content "Title can't be blank"
     end
+
+    scenario 'create a question with attached file' do
+      fill_in 'Title', with: 'Test question'
+      fill_in 'Body', with: 'text text text'
+
+      attach_file 'Files', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
+      click_on 'Confirm'
+
+      expect(page).to have_link 'rails_helper.rb'
+      expect(page).to have_link 'spec_helper.rb'
+    end
   end
 
-  scenario 'Unauthenticated user tries to ask a question', js: true do
+  scenario 'Unauthenticated user tries to create a question', js: true do
     visit questions_path
     click_on 'Ask question'
 

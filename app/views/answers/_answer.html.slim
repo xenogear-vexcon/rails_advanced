@@ -7,7 +7,14 @@
 						= content_tag :p, answer.body, class: "card-text h4"
 						br
 						= content_tag :p, answer.created_at, class: "card-text small"
-						- if current_user&.author_of?(@question)
+						- if answer.files.attached?
+							- answer.files.each do |file|
+								p
+									= link_to file.filename.to_s, url_for(file)
+									- if current_user&.author_of?(answer)
+										= link_to 'Remove', file_url(file.id), method: :delete, remote: true, class: 'btn btn-sm btn-outline-danger'
+
+						- if current_user&.author_of?(@question) && answer.not_best?
 							= form_with model: [@question, answer], url: mark_as_best_answer_path(answer), data: { answer_id: answer.id }, remote: true do |f|
 							 		= f.submit 'Mark as best', class: "btn btn-outline-success"
 						- if current_user&.author_of?(answer)
