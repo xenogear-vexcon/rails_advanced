@@ -23,7 +23,6 @@ class AnswersController < ApplicationController
   def mark_as_best
     @question = @answer.question
     @answer.mark_as_best if current_user.author_of?(@question)
-    @question.reward.update(user: @answer.user)
   end
 
   private

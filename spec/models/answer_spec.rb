@@ -12,4 +12,19 @@ RSpec.describe Answer, type: :model do
   it 'have many attached files' do
     expect(Answer.new.files).to be_an_instance_of(ActiveStorage::Attached::Many)
   end
+
+  describe '#mark_as_best' do
+    let!(:users) { create_list(:user, 2) }
+    let!(:question) { create(:question, user: users.first) }
+    let!(:reward) { create(:reward, question: question, user: users.first) }
+    let!(:answer1) { create(:answer, question: question, user: users.second) }
+    let!(:answer2) { create(:answer, question: question, user: users.first, best_answer: true) }
+
+    it 'answer become best & user receive reward' do
+      expect{answer1.mark_as_best}.to change{answer1.best_answer}.to(true)
+      expect(answer2.reload.best_answer).to eq false
+      expect(reward.reload.user).to eq users.second
+      expect(users.first.reload.rewards.count).to eq 0
+    end
+  end
 end
