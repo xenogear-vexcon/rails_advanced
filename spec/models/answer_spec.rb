@@ -20,11 +20,20 @@ RSpec.describe Answer, type: :model do
     let!(:answer1) { create(:answer, question: question, user: users.second) }
     let!(:answer2) { create(:answer, question: question, user: users.first, best_answer: true) }
 
-    it 'answer become best & user receive reward' do
+    it 'answer become best' do
       expect{answer1.mark_as_best}.to change{answer1.best_answer}.to(true)
-      expect(answer2.reload.best_answer).to eq false
-      expect(reward.reload.user).to eq users.second
-      expect(users.first.reload.rewards.count).to eq 0
+    end
+
+    it 'other answer become usual' do
+      expect{answer1.mark_as_best}.to change{answer2.reload.best_answer}.to(false)
+    end
+
+    it 'user receive reward' do
+      expect{answer1.mark_as_best}.to change{reward.reload.user}.to(users.second)
+    end
+
+    it 'previous user lost reward' do
+      expect{answer1.mark_as_best}.to change{users.first.reload.rewards.count}.to(0)
     end
   end
 end

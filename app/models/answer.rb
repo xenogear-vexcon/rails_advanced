@@ -12,9 +12,11 @@ class Answer < ApplicationRecord
   validates :body, presence: true
 
   def mark_as_best
-    self.question.answers.update(best_answer: false)
-    self.update(best_answer: true)
-    self.question.reward.update(user: self.user)
+    transaction do
+      self.question.answers.update(best_answer: false)
+      self.update(best_answer: true)
+      self.question.reward.update!(user: self.user)
+    end
   end
 
   def not_best?

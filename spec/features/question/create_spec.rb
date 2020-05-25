@@ -17,8 +17,10 @@ feature 'User can create question', %q{
     end
 
     scenario 'create a question' do
-      fill_in 'Title', with: 'Test question'
-      fill_in 'Body', with: 'text text text'
+      within '.question_form' do
+        fill_in 'Title', with: 'Test question'
+        fill_in 'Body', with: 'text text text'
+      end
       click_on 'Confirm'
 
       expect(page).to have_content 'Your question successfully created.'
@@ -27,16 +29,20 @@ feature 'User can create question', %q{
     end
 
     scenario 'create a question with errors' do
-      fill_in 'Title', with: ''
-      fill_in 'Body', with: 'text text text'
+      within '.question_form' do
+        fill_in 'Title', with: ''
+        fill_in 'Body', with: 'text text text'
+      end
       click_on 'Confirm'
 
       expect(page).to have_content "Title can't be blank"
     end
 
     scenario 'create a question with attached file' do
-      fill_in 'Title', with: 'Test question'
-      fill_in 'Body', with: 'text text text'
+      within '.question_form' do
+        fill_in 'Title', with: 'Test question'
+        fill_in 'Body', with: 'text text text'
+      end
 
       attach_file 'Files', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
       click_on 'Confirm'

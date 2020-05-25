@@ -40,6 +40,7 @@ feature 'User can edit his question', %q{
 
       scenario 'with errors' do
         fill_in 'Title', with: ''
+        save_and_open_page
         click_on 'Confirm'
 
         expect(page).to have_content "Title can't be blank"

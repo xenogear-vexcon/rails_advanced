@@ -6,6 +6,7 @@ feature 'User if he is question owner can choose one best answer', %q{
 
   given!(:users) { create_list(:user, 2) }
   given!(:question) { create(:question, user: users.first) }
+  given!(:reward) { create(:reward, question: question) }
   given!(:answer) { create(:answer, question: question, user: users.first) }
 
   scenario 'Unauthenticated user can not see button mark_as_best' do

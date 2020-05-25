@@ -1,5 +1,6 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
+  before_action :question, only: [:edit]
 
   def index
     @questions = Question.all
@@ -19,11 +20,7 @@ class QuestionsController < ApplicationController
     @question.build_reward
   end
 
-  def edit
-    if current_user.author_of?(question)
-      @question = Question.find(params[:id])
-    end
-  end
+  def edit; end
 
   def create
     @question = current_user.questions.new(question_params)
