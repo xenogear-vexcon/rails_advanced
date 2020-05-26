@@ -1,0 +1,9 @@
+.reward
+	.card
+		= image_tag(reward.image, size: "150", alt: "reward.title") if reward.image.present?
+		.card-body
+			.card-title
+				.b= reward.title
+			.card-text
+				p For question:
+				= link_to reward.question.title, question_path(reward.question)

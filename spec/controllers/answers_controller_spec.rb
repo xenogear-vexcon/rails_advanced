@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe AnswersController, type: :controller do
   let(:users) { create_list(:user, 2) }
   let(:question) { create(:question, user: users.first) }
+  let!(:reward) { create(:reward, question: question) }
 
   describe 'POST #create' do
     context 'authenticated user' do
@@ -152,10 +153,6 @@ RSpec.describe AnswersController, type: :controller do
     it 'assigns the requested answer to @answer' do
       expect(answer.body).to eq answer.body
     end
-
-    it 'renders edit form' do
-      expect(response).to render_template :edit
-    end
   end #end get edit
 
   describe 'PATCH #mark_as_best' do
@@ -169,6 +166,11 @@ RSpec.describe AnswersController, type: :controller do
         answer.reload
 
         expect(answer.best_answer).to eq true
+      end
+
+      it 'gives reward to user' do
+        patch :mark_as_best, params: { id: answer, answer: { best_answer: true } }, format: :js
+        expect(users.first.rewards.count).to eq 1
       end
 
       it 'render answer' do

@@ -1,4 +1,24 @@
-=render @question
+.question
+	= content_tag :div, id: dom_id(@question), class: "col-sm-6 mb-4" do
+		.question-errors
+		.row
+			.col-sm-12
+				.card
+					.card-body
+						= link_to @question.title, question_path(@question), class: "h2 card-title"
+						h4.card-text.mb-4.mt-4 #{@question.body}
+						
+						- if @question.files.attached?
+							p Files:
+							= render partial: 'shared/file', locals: {object: @question}
+
+						- if @question.links.present?
+							p Links:
+							.links.mb-4= render partial: 'shared/link', locals: {object: @question}
+
+						- if current_user&.author_of?(@question)
+							= link_to 'Edit question', edit_question_path(@question), class: 'btn btn-outline-warning', remote: true
+							= link_to 'Delete question', @question, method: :delete, class: 'btn btn-outline-danger'
 
 .answers.mb-4
 	.best-answer

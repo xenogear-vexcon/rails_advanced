@@ -1,5 +1,6 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
+  before_action :question, only: [:edit]
 
   def index
     @questions = Question.all
@@ -10,17 +11,16 @@ class QuestionsController < ApplicationController
     @answer = question.answers.new
     @best_answer = question.answers.where(best_answer: true)
     @other_answers = question.answers.where.not(best_answer: true)
+    @answer.links.new
   end
 
   def new
     @question = current_user.questions.new
+    @question.links.new
+    @question.build_reward
   end
 
-  def edit
-    if current_user.author_of?(question)
-      @question = Question.find(params[:id])
-    end
-  end
+  def edit; end
 
   def create
     @question = current_user.questions.new(question_params)
@@ -45,12 +45,6 @@ class QuestionsController < ApplicationController
     end
   end
 
-  def delete_file_attachment
-    @file = ActiveStorage::Attachment.find(params[:id])
-    @file.purge
-    @question = Question.find(@file.record_id)
-  end
-
   private
 
   def question
@@ -58,7 +52,7 @@ class QuestionsController < ApplicationController
   end
 
   def question_params
-    params.require(:question).permit(:title, :body, files: [])
+    params.require(:question).permit(:title, :body, files: [], links_attributes: [:id, :name, :url, :_destroy], reward_attributes: [:id, :title, :image])
   end
 
 end

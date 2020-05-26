@@ -25,16 +25,10 @@ class AnswersController < ApplicationController
     @answer.mark_as_best if current_user.author_of?(@question)
   end
 
-  def delete_file_attachment
-    @file = ActiveStorage::Attachment.find(params[:id])
-    @file.purge
-    @answer = Answer.find(@file.record_id)
-  end
-
   private
 
   def answer_params
-    params.require(:answer).permit(:body, files: [])
+    params.require(:answer).permit(:body, files: [], links_attributes: [:id, :name, :url, :_destroy])
   end
 
   def set_answer
