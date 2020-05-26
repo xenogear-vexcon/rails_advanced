@@ -14,7 +14,7 @@ class Answer < ApplicationRecord
   def mark_as_best
     transaction do
       self.question.answers.update(best_answer: false)
-      self.update(best_answer: true)
+      self.update!(best_answer: true)
       self.question.reward.update!(user: self.user)
     end
   end

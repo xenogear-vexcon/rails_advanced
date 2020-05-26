@@ -16,8 +16,7 @@
 							.links.mb-4= render partial: 'shared/link', locals: {object: answer}
 
 						- if current_user&.author_of?(@question) && answer.not_best?
-							= form_with model: [@question, answer], url: mark_as_best_answer_path(answer), data: { answer_id: answer.id }, remote: true do |f|
-							 		= f.submit 'Mark as best', class: "btn btn-outline-success"
+							= link_to 'Mark as best', mark_as_best_answer_path(answer), class: "btn btn-outline-success", method: :patch, remote: true
 						- if current_user&.author_of?(answer)
 							= link_to 'Edit answer', edit_answer_path(answer), class: 'btn btn-outline-warning', remote: true
 							= link_to 'Delete answer', answer_path(answer), method: :delete, class: 'btn btn-outline-danger', remote: true
