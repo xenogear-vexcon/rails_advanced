@@ -4,6 +4,7 @@ RSpec.describe AnswersController, type: :controller do
   let(:users) { create_list(:user, 2) }
   let(:question) { create(:question, user: users.first) }
   let!(:reward) { create(:reward, question: question) }
+  it_behaves_like "ranked"
 
   describe 'POST #create' do
     context 'authenticated user' do

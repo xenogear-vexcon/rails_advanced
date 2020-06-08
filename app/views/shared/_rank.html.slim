@@ -1,0 +1,27 @@
+- if object.class.name == "Question"
+	- if !object.positive_vote?(current_user)
+		= link_to 'up', up_question_path(object),
+										class: 'btn btn-success change-rating',
+										method: :patch,
+										remote: true,
+										data: { type: :json, question_id: object.id }
+	- if !object.negative_vote?(current_user)
+		= link_to 'down', down_question_path(object),
+											class: 'btn btn-success change-rating',
+											method: :patch,
+											remote: true,
+											data: { type: :json, question_id: object.id }
+
+- elsif object.class.name == "Answer"
+	- if !object.positive_vote?(current_user)
+		= link_to 'up', up_answer_path(object),
+										class: 'btn btn-success change-rating',
+										method: :patch,
+										remote: true,
+										data: { type: :json, answer_id: object.id }
+	- if !object.negative_vote?(current_user)
+		= link_to 'down', down_answer_path(object),
+											class: 'btn btn-success change-rating',
+											method: :patch,
+											remote: true,
+											data: { type: :json, answer_id: object.id }

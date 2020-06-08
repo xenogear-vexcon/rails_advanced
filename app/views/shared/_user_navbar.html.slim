@@ -6,6 +6,7 @@ nav.navbar.navbar-expand-lg.navbar-light.bg-light
         = link_to 'Home', questions_path, class:"nav-link"
     .form-inline.my-2.my-lg-0
       - if user_signed_in?
+        p Hi, #{current_user.email}!
         p= link_to 'Rewards', user_rewards_path(current_user), class: 'btn btn-success ml-2 mr-2'
         p= link_to 'Sign out', destroy_user_session_path, method: :delete, class:"btn btn-warning ml-2 mr-2"
       - else

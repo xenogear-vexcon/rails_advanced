@@ -1,4 +1,6 @@
 class Question < ApplicationRecord
+  include Rankable
+
   belongs_to :user
   has_many :answers, dependent: :destroy
   
@@ -9,7 +11,7 @@ class Question < ApplicationRecord
   accepts_nested_attributes_for :reward, reject_if: :all_blank, allow_destroy: true
 
   has_many_attached :files, dependent: :destroy
-  
 
   validates :title, :body, presence: true
+
 end
