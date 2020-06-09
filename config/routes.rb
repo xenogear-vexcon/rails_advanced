@@ -10,8 +10,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :questions do
-    concerns :rankable
+  resources :questions, concerns: :rankable do
     resources :answers, shallow: true, only: [:edit, :create, :update, :destroy] do
       concerns :rankable
       patch :mark_as_best, on: :member

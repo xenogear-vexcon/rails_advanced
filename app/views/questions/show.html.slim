@@ -20,9 +20,7 @@
 							= link_to 'Edit question', edit_question_path(@question), class: 'btn btn-outline-warning', remote: true
 							= link_to 'Delete question', @question, method: :delete, class: 'btn btn-outline-danger'
 
-						p.rating.mt-4 data-question-id="#{@question.id}" Rating: #{@question.rating}
-						span.vote-result
-						- if !current_user&.author_of?(@question) && user_signed_in?
+						.rank
 							= render partial: 'shared/rank', locals: {object: @question}
 
 .answers.mb-4

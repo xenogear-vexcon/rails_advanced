@@ -1,27 +1,23 @@
-- if object.class.name == "Question"
-	- if !object.positive_vote?(current_user)
-		= link_to 'up', up_question_path(object),
-										class: 'btn btn-success change-rating',
-										method: :patch,
-										remote: true,
-										data: { type: :json, question_id: object.id }
-	- if !object.negative_vote?(current_user)
-		= link_to 'down', down_question_path(object),
-											class: 'btn btn-success change-rating',
-											method: :patch,
-											remote: true,
-											data: { type: :json, question_id: object.id }
+p.mt-4.rating id=dom_id(object) Rating: #{object.ranks.sum(:result)}
 
-- elsif object.class.name == "Answer"
-	- if !object.positive_vote?(current_user)
-		= link_to 'up', up_answer_path(object),
-										class: 'btn btn-success change-rating',
-										method: :patch,
-										remote: true,
-										data: { type: :json, answer_id: object.id }
-	- if !object.negative_vote?(current_user)
-		= link_to 'down', down_answer_path(object),
-											class: 'btn btn-success change-rating',
-											method: :patch,
-											remote: true,
-											data: { type: :json, answer_id: object.id }
+- if !current_user&.author_of?(@question) && user_signed_in?
+	
+	p.mb-2.b.green.result id=dom_id(object)
+		- if object.ranks.find_by(user_id: current_user).present?
+		  | You voted #{object.rank_result(current_user)}
+
+	= link_to 'up', polymorphic_path(object, action: :up),
+						class: 'btn btn-success change-rank-up',
+						style: "#{object.rank_result(current_user) == 'positive' ? 'display: none' : 'display: inline-block'}",
+						method: :patch,
+						remote: true,
+						id: dom_id(object),
+						data: { type: :json }
+
+	= link_to 'down', polymorphic_path(object, action: :down),
+						class: 'btn btn-success change-rank-down',
+						style: "#{object.rank_result(current_user) == 'negative' ? 'display: none' : 'display: inline-block'}",
+						method: :patch,
+						remote: true,
+						id: dom_id(object),
+						data: { type: :json }

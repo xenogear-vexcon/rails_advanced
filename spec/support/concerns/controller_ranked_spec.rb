@@ -11,12 +11,12 @@ shared_examples_for "ranked" do
 
         it 'model rating up' do
           patch :up, params: { id: model }, format: :json
-          expect(model.rating).to eq 1
+          expect(model.ranks.sum(:result)).to eq 1
         end
 
         it 'cannot change rating by 2' do
           patch :up, params: { id: model, model: { status: 2 } }, format: :json
-          expect(model.rating).to eq 1
+          expect(model.ranks.sum(:result)).to eq 1
         end
       end #vote alient model
 
@@ -24,7 +24,7 @@ shared_examples_for "ranked" do
         it 'cannot affect rating' do
           login(model.user)
           patch :up, params: { id: model }, format: :json
-          expect(model.rating).to eq 0
+          expect(model.ranks.sum(:result)).to eq 0
         end
       end #vote own model
     end #authenticated user
@@ -32,7 +32,7 @@ shared_examples_for "ranked" do
     context 'unauthenticated user' do
       it 'cannot vote' do
         patch :up, params: { id: model }, format: :json
-        expect(model.rating).to eq 0
+        expect(model.ranks.sum(:result)).to eq 0
       end
     end #unauthenticated user
   end #PATCH #up
@@ -44,12 +44,12 @@ shared_examples_for "ranked" do
 
         it 'model rating down' do
           patch :down, params: { id: model }, format: :json
-          expect(model.rating).to eq -1
+          expect(model.ranks.sum(:result)).to eq -1
         end
 
         it 'cannot change rating by 2' do
           patch :down, params: { id: model, model: { status: -2 } }, format: :json
-          expect(model.rating).to eq -1
+          expect(model.ranks.sum(:result)).to eq -1
         end
       end #vote alient model
 
@@ -57,7 +57,7 @@ shared_examples_for "ranked" do
         it 'cannot affect rating' do
           login(model.user)
           patch :down, params: { id: model }, format: :json
-          expect(model.rating).to eq 0
+          expect(model.ranks.sum(:result)).to eq 0
         end
       end #vote own model
     end #authenticated user
@@ -65,7 +65,7 @@ shared_examples_for "ranked" do
     context 'unauthenticated user' do
       it 'cannot vote' do
         patch :down, params: { id: model }, format: :json
-        expect(model.rating).to eq 0
+        expect(model.ranks.sum(:result)).to eq 0
       end
     end #unauthenticated user
   end #PATCH #down

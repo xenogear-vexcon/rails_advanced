@@ -7,12 +7,12 @@ module Ranked
   end
 
   def up
-    @object.rating_up(current_user)
+    @object.rank_up(current_user)
     set_respond
   end
 
   def down
-    @object.rating_down(current_user)
+    @object.rank_down(current_user)
     set_respond
   end
 
@@ -24,8 +24,14 @@ module Ranked
 
   def set_respond
     respond_to do |format|
-      format.json { render json: @object.rating }
+      format.json {
+        render json: {
+          object: @object.class.name,
+          id: @object.id,
+          rating: @object.ranks.sum(:result),
+          rank_result: @object.ranks.find_by(user_id: current_user).present? ? @object.ranks.find_by(user_id: current_user).result : 0
+        }
+      }
     end
   end
-
 end

@@ -1,53 +1,40 @@
 module Rankable
   extend ActiveSupport::Concern
 
+  POSITIVE = 1
+  NEGATIVE = -1
+
   included do
     has_many :ranks, :as => :rankable, dependent: :destroy
   end
 
-  def rating
-    Rank.where(rankable: self).sum(:result)
+  def rank_up(user)
+    ranking(user, POSITIVE)
   end
 
-  def rating_up(user)
-    vote = Rank.find_by(rankable: self, user_id: user.id)
+  def rank_down(user)
+    ranking(user, NEGATIVE)
+  end
 
-    if self.user_id != user.id
-      if !vote.present?
-        Rank.create!(rankable: self, user_id: user.id, result: 1)
-      elsif vote.result == -1
-        vote.update!(result: 0)
-      elsif vote.result == 0
-        vote.update!(result: 1)
+  def rank_result(user)
+    if ranks.find_by(user_id: user.id).present?
+      ranks.find_by(user_id: user.id).result > 0 ? "positive" : "negative"
+    end
+  end
+
+
+  private
+
+  def ranking(user, rule)
+    rank = ranks.find_by(user_id: user.id)
+
+    if !user.author_of?(self)
+      if !rank.present?
+        ranks.create!(user_id: user.id, result: rule)
+      elsif rank.result != rule
+        rank.destroy!
       end
     end
   end
 
-  def rating_down(user)
-    vote = Rank.find_by(rankable: self, user_id: user.id)
-
-    if self.user_id != user.id
-      if !vote.present?
-        Rank.create!(rankable: self, user_id: user.id, result: -1)
-      elsif vote.result == 1
-        vote.update!(result: 0)
-      elsif vote.result == 0
-        vote.update!(result: -1)
-      end
-    end
-  end
-
-  def positive_vote?(user)
-    vote = Rank.find_by(rankable: self, user_id: user.id)
-    if vote.present?
-      vote.result == 1
-    end
-  end
-
-  def negative_vote?(user)
-    vote = Rank.find_by(rankable: self, user_id: user.id)
-    if vote.present?
-      vote.result == -1
-    end
-  end
 end

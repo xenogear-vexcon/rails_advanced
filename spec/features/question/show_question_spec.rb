@@ -13,14 +13,14 @@ feature 'User can see a question and answers if exist', %q{ All users can see an
     expect(page).to have_content("#{question.title}")
     expect(page).to have_content("#{question.body}")
     within '.question' do
-      expect(page).to have_content("Rating: #{question.rating}")
+      expect(page).to have_content("Rating: #{question.ranks.sum(:result)}")
       expect(page).to have_link("up")
       expect(page).to have_link("down")
     end
     within '.answers' do
       answers.each do |answer|
         expect(page).to have_content("#{answer.body}")
-        expect(page).to have_content("Rating: #{answer.rating}")
+        expect(page).to have_content("Rating: #{answer.ranks.sum(:result)}")
         expect(page).to have_link("up")
         expect(page).to have_link("down")
       end
@@ -33,14 +33,14 @@ feature 'User can see a question and answers if exist', %q{ All users can see an
     expect(page).to have_content("#{question.title}")
     expect(page).to have_content("#{question.body}")
     within '.question' do
-      expect(page).to have_content("Rating: #{question.rating}")
+      expect(page).to have_content("Rating: #{question.ranks.sum(:result)}")
       expect(page).to_not have_link("up")
       expect(page).to_not have_link("down")
     end
     within '.answers' do
       answers.each do |answer|
         expect(page).to have_content("#{answer.body}")
-        expect(page).to have_content("Rating: #{answer.rating}")
+        expect(page).to have_content("Rating: #{answer.ranks.sum(:result)}")
         expect(page).to_not have_link("up")
         expect(page).to_not have_link("down")
       end
