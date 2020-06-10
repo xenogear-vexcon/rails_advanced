@@ -18,10 +18,9 @@ module Rankable
 
   def rank_result(user)
     if ranks.find_by(user_id: user.id).present?
-      ranks.find_by(user_id: user.id).result > 0 ? "positive" : "negative"
+      ranks.find_by(user_id: user.id).result > 0 ? :positive : :negative
     end
   end
-
 
   private
 
