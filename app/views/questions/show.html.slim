@@ -1,5 +1,5 @@
 .question
-	= content_tag :div, id: dom_id(@question), class: "col-sm-6 mb-4" do
+	= content_tag :div, id: dom_id(@question), class: "col-sm-6 mb-4 question-field" do
 		.question-errors
 		.row
 			.col-sm-12
@@ -19,6 +19,9 @@
 						- if current_user&.author_of?(@question)
 							= link_to 'Edit question', edit_question_path(@question), class: 'btn btn-outline-warning', remote: true
 							= link_to 'Delete question', @question, method: :delete, class: 'btn btn-outline-danger'
+
+						.rank
+							= render partial: 'shared/rank', locals: {object: @question}
 
 .answers.mb-4
 	.best-answer

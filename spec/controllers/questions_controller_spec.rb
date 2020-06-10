@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe QuestionsController, type: :controller do
   let(:users) { create_list(:user, 2) }
   let(:question) { create(:question, user: users.first) }
+  it_behaves_like "ranked"
   
   describe 'GET #index' do
     let(:questions) { create_list(:question, 3) }

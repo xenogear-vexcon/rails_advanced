@@ -20,3 +20,5 @@
 						- if current_user&.author_of?(answer)
 							= link_to 'Edit answer', edit_answer_path(answer), class: 'btn btn-outline-warning', remote: true
 							= link_to 'Delete answer', answer_path(answer), method: :delete, class: 'btn btn-outline-danger', remote: true
+						.rank
+							= render partial: 'shared/rank', locals: {object: answer}

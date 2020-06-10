@@ -3,8 +3,16 @@ Rails.application.routes.draw do
 
   resources :files, only: [:destroy]
 
-  resources :questions do
+  concern :rankable do
+    member do
+      patch :up
+      patch :down
+    end
+  end
+
+  resources :questions, concerns: :rankable do
     resources :answers, shallow: true, only: [:edit, :create, :update, :destroy] do
+      concerns :rankable
       patch :mark_as_best, on: :member
     end
   end

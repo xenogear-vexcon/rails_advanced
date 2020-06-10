@@ -1,9 +1,13 @@
 class Answer < ApplicationRecord
+  include Rankable
+  
   belongs_to :question
   belongs_to :user
 
   has_many :links, dependent: :destroy, as: :linkable
   has_many_attached :files, dependent: :destroy
+
+  has_one :rank, as: :rankable
 
   default_scope -> { order(created_at: :desc) }
 

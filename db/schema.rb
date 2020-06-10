@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_17_104827) do
+ActiveRecord::Schema.define(version: 2020_06_04_094050) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,6 +64,17 @@ ActiveRecord::Schema.define(version: 2020_05_17_104827) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_questions_on_user_id"
+  end
+
+  create_table "ranks", force: :cascade do |t|
+    t.integer "result"
+    t.string "rankable_type"
+    t.bigint "rankable_id"
+    t.bigint "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["rankable_type", "rankable_id"], name: "index_ranks_on_rankable_type_and_rankable_id"
+    t.index ["user_id"], name: "index_ranks_on_user_id"
   end
 
   create_table "rewards", force: :cascade do |t|

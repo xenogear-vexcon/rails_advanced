@@ -1,4 +1,6 @@
 class QuestionsController < ApplicationController
+  include Ranked
+
   before_action :authenticate_user!, except: [:index, :show]
   before_action :question, only: [:edit]
 

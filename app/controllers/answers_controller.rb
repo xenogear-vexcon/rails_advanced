@@ -1,4 +1,6 @@
 class AnswersController < ApplicationController
+  include Ranked
+
   before_action :authenticate_user!
   before_action :set_answer, only: %i[edit update destroy mark_as_best]
   before_action :set_question, only: %i[create]
@@ -6,6 +8,7 @@ class AnswersController < ApplicationController
   def create
     @answer = @question.answers.new(answer_params)
     @answer.user = current_user
+    @rank = Rank.create(rankable: @answer)
     @answer.save
   end
 
