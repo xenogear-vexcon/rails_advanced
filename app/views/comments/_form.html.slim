@@ -1,0 +1,7 @@
+= form_with model: @comment, id: dom_id(@comment, 'form') do |f|
+	.comment-errors
+	p
+		= f.label :body
+		= f.text_area :body, class: 'form-control col-sm-6'
+	p
+		= f.submit 'Confirm'

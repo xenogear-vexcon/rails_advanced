@@ -1,0 +1,6 @@
+$('.comment-errors').html('<%= render 'shared/errors', resource: @comment %>');
+
+<% if !@comment.errors.present? %>
+  document.getElementById('<%= dom_id(@comment) %>').insertAdjacentHTML('afterend', "<%= j render 'form', comment: @comment %>");
+  document.getElementById('<%= dom_id(@comment) %>').style.display = "none";
+<% end %>

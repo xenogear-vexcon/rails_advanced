@@ -38,6 +38,7 @@ gem "aws-sdk-s3", require: false
 #Cocoon makes it easier to handle nested forms.
 # gem 'jquery-rails'
 gem 'cocoon'
+gem 'gon'
 
 
 group :development, :test do

@@ -1,5 +1,6 @@
 class Answer < ApplicationRecord
   include Rankable
+  include Commentable
   
   belongs_to :question
   belongs_to :user
@@ -7,13 +8,12 @@ class Answer < ApplicationRecord
   has_many :links, dependent: :destroy, as: :linkable
   has_many_attached :files, dependent: :destroy
 
-  has_one :rank, as: :rankable
-
-  default_scope -> { order(created_at: :desc) }
+  default_scope -> { order(created_at: :asc) }
 
   accepts_nested_attributes_for :links, reject_if: :all_blank, allow_destroy: true
 
   validates :body, presence: true
+
 
   def mark_as_best
     transaction do

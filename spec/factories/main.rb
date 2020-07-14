@@ -38,4 +38,8 @@ FactoryBot.define do
       body { nil }
     end
   end
+
+  factory :comment do
+    body { "MyText" }
+  end
 end

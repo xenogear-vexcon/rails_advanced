@@ -4,11 +4,11 @@ class AnswersController < ApplicationController
   before_action :authenticate_user!
   before_action :set_answer, only: %i[edit update destroy mark_as_best]
   before_action :set_question, only: %i[create]
+  after_action :publish_answer, only: %i[create]
 
   def create
     @answer = @question.answers.new(answer_params)
     @answer.user = current_user
-    @rank = Rank.create(rankable: @answer)
     @answer.save
   end
 
@@ -40,6 +40,13 @@ class AnswersController < ApplicationController
 
   def set_question
     @question = Question.find(params[:question_id])
+  end
+
+  def publish_answer
+    return if @answer.errors.any?
+    ActionCable.server.broadcast('answers_channel',
+      ApplicationController.render_with_signed_in_user(current_user, rank: @answer.ranks.sum(:result), partial: 'answers/answer', locals: {answer: @answer})
+    )
   end
 
 end
