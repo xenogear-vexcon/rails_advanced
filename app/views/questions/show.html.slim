@@ -1,4 +1,4 @@
-.question
+#question_id.question data-question-id=@question.id
 	= content_tag :div, id: dom_id(@question), class: "col-sm-6 mb-4 question-field" do
 		.question-errors
 		.row
@@ -28,11 +28,10 @@
 							= render partial: '/comments/comment', collection: @question.comments, locals: {object: @question}
 						= render 'comments/new', object: @question
 
+	p.h3 Answers
+	.answers.mb-4
+		.best-answer
+			= render @best_answer
+		= render @other_answers
 
-p.h3 Answers
-.answers.mb-4
-	.best-answer
-		= render @best_answer
-	= render @other_answers
-
-div= render 'answers/new'
+	div= render 'answers/new'

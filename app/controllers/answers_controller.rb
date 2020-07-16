@@ -4,12 +4,16 @@ class AnswersController < ApplicationController
   before_action :authenticate_user!
   before_action :set_answer, only: %i[edit update destroy mark_as_best]
   before_action :set_question, only: %i[create]
-  after_action :publish_answer, only: %i[create]
 
   def create
     @answer = @question.answers.new(answer_params)
     @answer.user = current_user
-    @answer.save
+    gon.current_user = current_user
+    if @answer.save
+      publish_answer
+    else
+      render json: @answer.errors.full_messages, status: :unprocessable_entity
+    end
   end
 
   def edit; end
@@ -44,9 +48,21 @@ class AnswersController < ApplicationController
 
   def publish_answer
     return if @answer.errors.any?
-    ActionCable.server.broadcast('answers_channel',
-      ApplicationController.render_with_signed_in_user(current_user, rank: @answer.ranks.sum(:result), partial: 'answers/answer', locals: {answer: @answer})
-    )
+    ActionCable.server.broadcast("question_#{@answer.question.id}_answers_channel", answer: render_answer)
   end
 
+  def render_answer
+    AnswersController.renderer.instance_variable_set(:@env, {"HTTP_HOST"=>"localhost:3000", 
+      "HTTPS"=>"off", 
+      "REQUEST_METHOD"=>"GET", 
+      "SCRIPT_NAME"=>"",   
+      "warden" => warden
+    })
+
+    AnswersController.render(
+      rank: @answer.ranks.sum(:result),
+      partial: 'answers/answer',
+      locals: { answer: @answer }
+    )
+  end
 end

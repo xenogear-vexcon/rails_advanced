@@ -2,14 +2,16 @@ class CommentsController < ApplicationController
 
   before_action :authenticate_user!
   before_action :set_comment, only: %i[edit update destroy]
-  after_action :publish_comment, only: %i[create]
 
   def create
     @commentable = set_commentable
     @comment = @commentable.comments.new(comment_params)
     @comment.user = current_user
-    if !@comment.save
-      render json: {errors: @comment.errors.full_messages, status: :unprocessable_entity}
+    gon.commentable_id = @comment.commentable_id
+    if @comment.save
+      publish_comment
+    else
+      render json: @comment.errors.full_messages, status: :unprocessable_entity
     end
   end
 
@@ -44,9 +46,24 @@ class CommentsController < ApplicationController
 
   def publish_comment
     return if @comment.errors.any?
-    ActionCable.server.broadcast('comments_channel',
-      comment: ApplicationController.render_with_signed_in_user(current_user, partial: 'comments/comment', locals: {comment: @comment}), 
-      commentable_class: "#{@comment.commentable_type.downcase}_#{@comment.commentable_id}_comments"
+    ActionCable.server.broadcast("question_#{@comment.question_id}_comments_channel", comment: render_comment,
+      commentable_class: @comment.comment_class_title
+    )
+  end
+
+  def render_comment
+    CommentsController.renderer.instance_variable_set(:@env, {"HTTP_HOST"=>"localhost:3000",
+      "HTTPS"=>"off",
+      "REQUEST_METHOD"=>"GET",
+      "SCRIPT_NAME"=>"",
+      "warden" => warden
+    })
+
+    CommentsController.render(
+      partial: 'comments/comment',
+      locals: {
+        comment: @comment
+      }
     )
   end
 end

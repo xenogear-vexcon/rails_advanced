@@ -14,6 +14,8 @@ class Answer < ApplicationRecord
 
   validates :body, presence: true
 
+  # after_create_commit { AnswerBroadcastJob.perform_later(self) }
+
 
   def mark_as_best
     transaction do
