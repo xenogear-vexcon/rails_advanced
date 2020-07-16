@@ -13,6 +13,8 @@
 	p.b Reward
   	= f.fields_for :reward do |reward|
 			= render 'reward', f: reward
+	.links
+	    = link_to_add_association 'add reward', f, :reward, partial: 'reward'
 
 	p.b Links:
     = f.fields_for :links do |link|

@@ -1,4 +1,4 @@
-.question
+#question_id.question data-question-id=@question.id
 	= content_tag :div, id: dom_id(@question), class: "col-sm-6 mb-4 question-field" do
 		.question-errors
 		.row
@@ -23,9 +23,15 @@
 						.rank
 							= render partial: 'shared/rank', locals: {object: @question}
 
-.answers.mb-4
-	.best-answer
-		= render @best_answer
-	= render @other_answers
+						p.b.mt-4.mb-1 Comments
+						= content_tag :div, class: "#{dom_id(@question)}_comments"
+							= render partial: '/comments/comment', collection: @question.comments, locals: {object: @question}
+						= render 'comments/new', object: @question
 
-div= render 'answers/new'
+	p.h3 Answers
+	.answers.mb-4
+		.best-answer
+			= render @best_answer
+		= render @other_answers
+
+	div= render 'answers/new'

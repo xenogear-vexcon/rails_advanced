@@ -22,3 +22,8 @@
 							= link_to 'Delete answer', answer_path(answer), method: :delete, class: 'btn btn-outline-danger', remote: true
 						.rank
 							= render partial: 'shared/rank', locals: {object: answer}
+
+						p.b.mt-4.mb-1 Comments
+						= content_tag :div, class: "#{dom_id(answer)}_comments"
+							= render partial: '/comments/comment', collection: answer.comments, locals: {object: answer}
+						= render 'comments/new', object: answer

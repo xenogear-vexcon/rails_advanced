@@ -1,0 +1,8 @@
+-if user_signed_in?
+	= form_with(model: [object, Comment.new], class: 'new-comment') do |f|
+		div class="#{dom_id(object)}_comment_errors"
+		p
+			= f.label :body, class: "hidden"
+			= f.text_area :body, class: 'form-control col-sm-6'
+		p
+			= f.submit 'comment'

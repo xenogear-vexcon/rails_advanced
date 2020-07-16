@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+
+  root to: 'questions#index'
+
   devise_for :users
 
   resources :files, only: [:destroy]
@@ -11,9 +14,11 @@ Rails.application.routes.draw do
   end
 
   resources :questions, concerns: :rankable do
-    resources :answers, shallow: true, only: [:edit, :create, :update, :destroy] do
+    resources :comments, only: [:create, :edit, :update, :destroy]
+    resources :answers, only: [:edit, :create, :update, :destroy], shallow: true do
       concerns :rankable
       patch :mark_as_best, on: :member
+      resources :comments, only: [:create, :edit, :update, :destroy], shallow: false
     end
   end
 
@@ -21,5 +26,6 @@ Rails.application.routes.draw do
     resources :rewards, only: [:index]
   end
 
-  root to: 'questions#index'
+  mount ActionCable.server => '/cable'
+
 end

@@ -1,0 +1,7 @@
+$('.comment-errors').html('<%= render 'shared/errors', resource: @comment %>');
+
+<% if !@comment.errors.present? %>
+	document.getElementById("<%= dom_id(@comment, 'form') %>").remove();
+  document.getElementById("<%= dom_id(@comment) %>").innerHTML = "<%= j render @comment %>"
+  document.getElementById("<%= dom_id(@comment) %>").style.display = "block"
+<% end %>

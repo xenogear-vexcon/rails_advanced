@@ -8,8 +8,12 @@ class AnswersController < ApplicationController
   def create
     @answer = @question.answers.new(answer_params)
     @answer.user = current_user
-    @rank = Rank.create(rankable: @answer)
-    @answer.save
+    gon.current_user = current_user
+    if @answer.save
+      publish_answer
+    else
+      render json: @answer.errors.full_messages, status: :unprocessable_entity
+    end
   end
 
   def edit; end
@@ -42,4 +46,23 @@ class AnswersController < ApplicationController
     @question = Question.find(params[:question_id])
   end
 
+  def publish_answer
+    return if @answer.errors.any?
+    ActionCable.server.broadcast("question_#{@answer.question.id}_answers_channel", answer: render_answer)
+  end
+
+  def render_answer
+    AnswersController.renderer.instance_variable_set(:@env, {"HTTP_HOST"=>"localhost:3000", 
+      "HTTPS"=>"off", 
+      "REQUEST_METHOD"=>"GET", 
+      "SCRIPT_NAME"=>"",   
+      "warden" => warden
+    })
+
+    AnswersController.render(
+      rank: @answer.ranks.sum(:result),
+      partial: 'answers/answer',
+      locals: { answer: @answer }
+    )
+  end
 end

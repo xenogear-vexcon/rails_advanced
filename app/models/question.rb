@@ -1,5 +1,6 @@
 class Question < ApplicationRecord
   include Rankable
+  include Commentable
 
   belongs_to :user
   has_many :answers, dependent: :destroy
@@ -12,6 +13,15 @@ class Question < ApplicationRecord
 
   has_many_attached :files, dependent: :destroy
 
+  default_scope -> { order(created_at: :asc) }
+
   validates :title, :body, presence: true
+
+  after_create_commit :broadcast, on: :create
+  # after_destroy :broadcast
+
+  def broadcast
+    QuestionBroadcastJob.perform_later(self)
+  end
 
 end
